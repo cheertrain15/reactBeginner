@@ -86,7 +86,9 @@ class FormContainer extends React.Component{
 				<div className="form-container">
 					{formElements}
 				</div>
-				<div className="submit-container"><input type="submit" value="送信" disabled={this.state.disabled.reduce((a, b) => a || b)} /></div>
+				<div className="submit-container">
+					<input type="submit" value="送信" disabled={this.state.disabled.reduce((a, b) => a || b)} />
+				</div>
 			</div>
 		);
 	}
