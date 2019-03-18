@@ -13,7 +13,9 @@
 			transition : opacity 0.5s linear;
 		}
 		.disable{
+			position:absolute;
 			opacity: 0;
+			z-index: -1;
 		}
 	</style>
 	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -26,34 +28,35 @@
 	class Login extends React.Component{
 		constructor(props){
 			super(props);
-			this.state = {status : 0};
 			this.init();
 		}
 		init(){
 			this.setParameters();
 		}
 		setParameters(){
-			this.idForm = 
+			
 		}
 		submitId(event){
-			var temp = document.getElementById("writtenId").value;
-			if(temp.length == 0){
+			var writtenId = document.getElementById("writtenId").value;
+			if(writtenId.length == 0){
 				return;
 			}
 			document.getElementsByClassName("login-id-container")[0].classList.add("disable");
+			document.getElementsByClassName("password-container")[0].classList.remove("disable");
 		}
 		submitPassword(){
-			
+			var writtenPassword = document.getElementById("writtenPassword").value;
+			if(writtenPassword.length == 0){
+				return;
+			}
+			document.getElementsByClassName("password-container")[0].classList.add("disable");
 		}
 		goPrevious(){
-
+			document.getElementsByClassName("login-id-container")[0].classList.remove("disable");
+			document.getElementsByClassName("password-container")[0].classList.add("disable");
 		}
-		initiateCrossFade(event){
-			if(this.state.status == 0){
-				// event.target.style.display = "none";
-			} else if(this.state.status == 1){
-				
-			}	
+		initiateCrossFade(){
+
 		}
 		render(){
 			return(
@@ -70,7 +73,7 @@
 						<input value="戻る" type="button" onClick={this.goPrevious.bind(this)}/>
 					</div>
 				</div>
-			)
+			);
 		}
 	}
 
