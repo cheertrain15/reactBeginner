@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+		ul{
+			list-style-type: none;
+		}
+		li{
+			
+			display: inline-block;
+			width: 2rem;
+			height: 2.5rem;
+			background-color : #9AE;
+			border-radius: 1rem;
+			text-align: center;
+			vertical-align: middle;
+			line-height: 200%;
+			margin: 0 10px;
+		}
+		#jsi-pagination-wrapper{
+			width: 100%;
+			margin: 0 auto;
+		}
+		.disable{
+			color: #FFF;
+		}
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-pagination-wrapper"></div>
+<script type="text/babel">
+	class Pagination extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {currentPage: 0};
+			this.paginations = [10, 10, 5];
+		}
+		render(){
+			const paginationForm = this.paginations.map((pagination, index)=>
+				<ul key={index}>
+					<li id="jsi-previous-trigger" className="disable">&lt;</li>
+					<Pages maxPage={pagination} currentPage={this.state.currentPage}/>
+					<li id="jsi-next-trigger">&gt;</li>
+				</ul>	
+			);
+			return(
+				<div id="jsi-pagination-container">
+					{paginationForm}
+				</div>
+			);
+		}
+	}
+
+	class Pages extends React.Component{
+		constructor(props){
+			super(props);
+			this.state={
+				currentPage : this.props.currentPage,
+				maxPage : this.props.maxPage
+			}
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			this.pagesArray = [];
+			for(var i = 0; i < this.state.maxPage ; i++){
+				this.pagesArray.push(i+1);
+			}
+			console.log();
+		}
+		render(){
+			const lists = this.pagesArray.map((pages, index)=>
+				<li key={index}>{pages}</li>
+			);
+			return(
+				{lists}
+			);
+		}
+	}
+
+	ReactDOM.render(
+		<Pagination />,
+		document.getElementById("jsi-pagination-wrapper")
+	);
+</script>
+</body>
+</html>
