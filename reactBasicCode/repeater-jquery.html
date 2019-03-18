@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(jQuery)</title>
+	<style>
+	.container{
+		width: 300px;
+		margin: 50px auto;
+		font-size: 13px;
+	}
+	.input{
+		width: 100%;
+		padding: 5px;
+	}
+	.output{
+		width: 100%;
+		margin-top: 30px;
+		word-break: break-all;
+		border: solid 1px #808080;
+		padding: 5px;
+	}
+	.output.non{
+		color: #808080;
+	}
+	</style>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<div class="wrapper">
+	<div class="container">
+		<input id="jsi-input" class="input" type="text" placeholder="ここに入力すると・・・" />
+		<div id="jsi-output" class="output"></div>
+	</div>
+</div>
+<script type="text/javascript">
+var repeater = {
+	DEFAULT_OUTPUT_TEXT : 'ここに出力されます',
+	
+	init : function(){
+		this.setParameters();
+		this.bindEvent();
+		this.changeText();
+	},
+	setParameters : function(){
+		this.$input = $('#jsi-input');
+		this.$output = $('#jsi-output');
+	},
+	bindEvent : function(){
+		this.$input.on('input', $.proxy(this.changeText, this));
+	},
+	changeText : function(){
+		var text = this.$input.val();
+		
+		if(text.length == 0){
+			this.$output.addClass('non').text(this.DEFAULT_OUTPUT_TEXT);
+		}else{
+			this.$output.removeClass('non').text(text);
+		}
+	}
+};
+$(function(){
+	repeater.init();
+});
+</script>
+</body>
+</html>

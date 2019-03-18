@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-counter-wrapper"></div>
+<script type="text/babel">
+
+	class Counter extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {value : 0};
+		}
+		raiseValue(){
+			this.setState((prevState)=>{
+				return {value : prevState.value + 1};
+			});
+		}
+		lowerValue(){
+			this.setState((prevState)=>{
+				return {value : prevState.value -1};
+			});
+		}
+		render(){
+			return (
+				<div>
+					<input type="button" value="increment" onClick={this.raiseValue.bind(this)}/>
+					<input type="button" value="decrement" onClick={this.lowerValue.bind(this)}/>
+					<span>{this.state.value}</span>
+				</div>
+			);
+		}
+	}
+
+	ReactDOM.render(
+		<Counter />,
+		document.getElementById("jsi-counter-wrapper")
+	);
+</script>
+</body>
+</html>

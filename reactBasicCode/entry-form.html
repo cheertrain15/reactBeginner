@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>エントリーフォーム</title>
+	<style>
+		.form-container{
+			width: 400px;
+			margin: 10px auto;
+			border: solid 1px #808080;
+		}
+		.form-container > dl{
+			margin: 0;
+			padding: 0;
+			line-height: 1.5;
+		}
+		.form-container > dl::after{
+			content: "";
+			display: block;
+			width: 0;
+			height: 0;
+			visibility: hidden;
+			clear: both;
+		}
+		.form-container > dl + dl{
+			border-top: solid 1px #808080;
+		}
+		.form-container > dl > dt{
+			float: left;
+			margin: 0;
+			padding: 10px;
+			width: 100px;
+			box-sizing: border-box;
+		}
+		.form-container > dl > dd{
+			float: left;
+			margin: 0;
+			padding: 10px;
+			width: 300px;
+			box-sizing: border-box;
+			border-left: solid 1px #808080;
+		}
+		.form-container > dl > dd > input[type="text"], .form-container > dl > dd > textarea{
+			width: 100%;
+		}
+		.form-container > dl > dd > span{
+			color: #FF0000;
+			font-size: 0.8em;
+		}
+		.submit-container{
+			text-align: center;
+		}
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+<form action="" method="" id="jsi-form-wrapper"></form>
+<script type="text/babel">
+class FormContainer extends React.Component{
+	constructor(props) {
+		super(props);
+		this.init();
+	}
+	init(){
+		this.items = [
+			{name : '姓', max : 5},
+			{name : '名', max : 5},
+			{name : '意見', max : 30}
+		];
+		this.state = {disabled : (new Array(this.items.length)).fill(true)};
+	}
+	controlSubmit(index, disabled){
+		this.setState((prevState, props) => {
+			prevState.disabled[index] = disabled;
+			return {disabled : prevState.disabled};
+		})
+	}
+	render(){
+		const formElements = this.items.map((item, index) =>
+			<FormElement key={index} item={item} onControlSubmit={this.controlSubmit.bind(this, index)} />
+		);
+		return (
+			<div>
+				<div className="form-container">
+					{formElements}
+				</div>
+				<div className="submit-container"><input type="submit" value="送信" disabled={this.state.disabled.reduce((a, b) => a || b)} /></div>
+			</div>
+		);
+	}
+}
+class FormElement extends React.Component{
+	constructor(props) {
+		super(props);
+		this.state = {value : ''};
+		this.error = '';
+	}
+	validate(event){
+		this.setState({value : event.target.value});
+		this.error = '';
+		
+		if(event.target.value.length == 0){
+			this.props.onControlSubmit(true);
+		}else if(event.target.value.length > this.props.item.max){
+			this.error = this.props.item.max + '文字以内で入力してください';
+			this.props.onControlSubmit(true);
+		}else{
+			this.props.onControlSubmit(false);
+		}
+	}
+	render(){
+		const createMessage = (() => {
+			if(this.error.length == 0){
+				return null;
+			}else{
+				return <span>{this.error}</span>;
+			}
+		});
+		return (
+			<dl>
+				<dt>{this.props.item.name}</dt>
+				<dd><input type="text" value={this.state.value} onChange={this.validate.bind(this)} />{createMessage()}</dd>
+			</dl>
+		);
+	}
+}
+ReactDOM.render(
+	<FormContainer />,
+	document.getElementById('jsi-form-wrapper')
+);
+</script>
+</body>
+</html>

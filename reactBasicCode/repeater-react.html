@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+	.container{
+		width: 300px;
+		margin: 50px auto;
+		font-size: 13px;
+	}
+	.input{
+		width: 100%;
+		padding: 5px;
+	}
+	.output{
+		width: 100%;
+		margin-top: 30px;
+		word-break: break-all;
+		border: solid 1px #808080;
+		padding: 5px;
+	}
+	.output.non{
+		color: #808080;
+	}
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+<div id="jsi-repeat-wrapper" class="wrapper"></div>
+<script type="text/babel">
+class RepeatContainer extends React.Component{
+	constructor(props) {
+		super(props);
+		this.state = {value : ''};
+	}
+	changeText(event){
+		this.setState({value : event.target.value});
+	}
+	render(){
+		return (
+			<div className="container">
+				<input className="input" type="text" placeholder="ここに入力すると・・・" value={this.state.value} onChange={this.changeText.bind(this)} />
+				<div className={'output ' + (this.state.value.length == 0 ? 'non' : '')}>{this.state.value.length == 0 ? 'ここに出力されます' : this.state.value}</div>
+			</div>
+		);
+	};
+}
+
+ReactDOM.render(
+	<RepeatContainer />,
+	document.getElementById('jsi-repeat-wrapper')
+);
+</script>
+</body>
+</html>

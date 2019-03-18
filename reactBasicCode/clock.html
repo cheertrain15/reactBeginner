@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>Clock</title>
+	<style>
+		.clock-container{
+			font-size: 30px;
+			margin-top: 30px;
+			text-align: center;
+		}
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+<div id="jsi-clock-wrapper"></div>
+<script type="text/babel">
+class ClockWrapper extends React.Component{
+	constructor(props) {
+		super(props);
+		this.state = {time : new Date()};
+	}
+	componentDidMount(){
+		this.timerId = setInterval(this.setTime.bind(this), 1000);
+	}
+	componentWillUnmount(){
+		clearInterval(this.timerId);
+	}
+	setTime(){
+		this.setState({time : new Date()});
+	}
+	render(){
+		return (
+			<div className="clock-container">
+				{this.state.time.toLocaleTimeString()}
+			</div>
+		);
+	}
+}
+ReactDOM.render(
+	<ClockWrapper />,
+	document.getElementById('jsi-clock-wrapper')
+);
+</script>
+</body>
+</html>

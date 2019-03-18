@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+		*, *::before, *::after{
+			border : 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		.carousel-wrapper{
+			margin-top: 30px;
+		}
+
+		.carousel-window{
+			width: 800px;
+			height: 400px;
+			margin: 0 auto;
+			overflow: hidden;
+		}
+
+		.carousel-tape{
+			position: relative;
+			width: 4800px;
+			height: 400px;
+			left: 0;
+			transition: none;
+		}
+
+		.carousel-tape > img{
+			display:block;
+			float : left;
+		}
+
+		.trigger{
+			width: 200px;
+			margin: 20px auto 0;
+			text-align: center;
+		}
+
+		.trigger > div:hover{
+			cursor: pointer;
+		}
+
+		.previous-trigger{
+			display: block;
+			float: left;
+			
+		}
+
+		.next-trigger{
+			display: block;
+			float: right;
+		}
+
+		.indicator{
+			position: relative;
+			width: auto;
+			top : -3px;
+			display: block;
+			margin : 0 auto;
+			left : 25px;
+		}
+
+		.indicator > li{
+			display: block;
+			float:left;
+		}
+
+		.indicator > li > a.active{
+			color: #A66;
+		}
+
+		.indicator > li > a{
+			text-decoration: none;
+			color: #999;
+		}
+
+		.indicator > li::before{
+			content : "";
+			display: block;
+			margin-left: 10px;
+			float:left;
+		}
+
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-carousel-wrapper" class="jsc-carousel-wrapper carousel-wrapper"></div>
+<script type="text/babel">
+
+	class Carousel extends React.Component{
+		constructor(props){
+			super(props);
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			this.state={
+				initialization : false,
+				currentIndex : 0,
+				maxIndex : 0,
+				slideDistance : 0,
+				currentOffsetX : 0,
+				animationTarget : null
+			}
+		}
+		checkStartAndEnd(){
+			if(this.state.currentIndex < 0){
+
+				this.state.currentIndex = this.state.maxIndex-1;
+				this.state.animationTarget.style.left = ((-this.state.slideDistance * this.state.currentIndex) + "px");
+				this.state.animationTarget.style.transition = "all 0s linear";
+
+			} else if (this.state.currentIndex >= this.state.maxIndex){
+
+				this.state.currentIndex = 0;
+				this.state.animationTarget.style.left = (0 + "px");
+				this.state.animationTarget.style.transition = "all 0s linear";
+
+			} 		
+		}
+		modifyParameters(){
+			if(this.state.initialization == false){
+
+				this.state.initialization = true;
+				this.state.maxIndex = document.getElementsByTagName("img").length;
+				this.state.slideDistance = document.getElementById("jsi-carousel-window").offsetWidth;
+				this.state.animationTarget = document.getElementById("jsi-carousel-tape");
+
+			}
+			
+			this.slideCarousel();
+		}
+		slideCarousel(){
+			if(this.state.currentIndex < 0 || this.state.currentIndex >= this.state.maxIndex){
+				this.checkStartAndEnd();		
+				return;
+			}	
+
+			this.state.animationTarget.style.transition = "all 0.5s linear";
+			this.state.animationTarget.style.left = ((-this.state.slideDistance * this.state.currentIndex) + "px");
+		}
+		slideToNext(){
+			++this.state.currentIndex;
+			this.modifyParameters();
+		}
+		slideToPrevious(){
+			--this.state.currentIndex;
+			this.modifyParameters();
+		}
+		render(){
+			return(
+				<div>
+					<div id="jsi-carousel-window" className="jsc-carousel-window carousel-window">
+						<div id="jsi-carousel-tape" className="jsc-carousel-tape carousel-tape">
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+							<img src="./img/sample2.jpg" alt="Carousel Image"/>
+							<img src="./img/sample3.jpg" alt="Carousel Image"/>
+							<img src="./img/sample4.jpg" alt="Carousel Image"/>
+							<img src="./img/sample5.jpg" alt="Carousel Image"/>
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+						</div>
+					</div>
+					<div className="jsc-trigger trigger">
+						<div className="jsc-previous-trigger previous-trigger" onClick={this.slideToPrevious.bind(this)}>&lt;</div>
+						<div className="jsc-next-trigger next-trigger" onClick={this.slideToNext.bind(this)}>&gt;</div>
+					</div>
+				</div>
+			)
+		}
+	}
+
+
+	class IndicatorCarousel extends Carousel{
+		checkObject(){
+			var temp = document.querySelector(".active");
+			if(temp != null){
+				temp.classList.remove("active");
+				document.querySelectorAll("a")[this.state.currentIndex].classList.add("active");
+				this.modifyParameters();
+			}
+		}
+		slideToNext(){
+			super.slideToNext();
+			this.checkObject();
+		}
+		slideToPrevious(){
+			super.slideToPrevious();
+			this.checkObject();
+		}
+		slideToIndicator(index){
+			this.state.currentIndex = index;
+			this.checkObject();
+		}
+		render(){
+			return(
+				<div>
+					<div id="jsi-carousel-window" className="jsc-carousel-window carousel-window">
+						<div id="jsi-carousel-tape" className="jsc-carousel-tape carousel-tape">
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+							<img src="./img/sample2.jpg" alt="Carousel Image"/>
+							<img src="./img/sample3.jpg" alt="Carousel Image"/>
+							<img src="./img/sample4.jpg" alt="Carousel Image"/>
+							<img src="./img/sample5.jpg" alt="Carousel Image"/>
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+						</div>
+					</div>
+					<div id="jsi-trigger" className="jsc-trigger trigger">
+						<div className="jsc-previous-trigger previous-trigger" onClick={this.slideToPrevious.bind(this)}>&lt;</div>
+						<ul className="jsc-indicator indicator">
+							<li><a className="active" value="0" href="#" onClick={this.slideToIndicator.bind(this,0)}>&#9673;</a></li>
+							<li><a href="#" value="1" onClick={this.slideToIndicator.bind(this,1)}>&#9673;</a></li>
+							<li><a href="#" value="2" onClick={this.slideToIndicator.bind(this,2)}>&#9673;</a></li>
+							<li><a href="#" value="3" onClick={this.slideToIndicator.bind(this,3)}>&#9673;</a></li>
+							<li><a href="#" value="4" onClick={this.slideToIndicator.bind(this,4)}>&#9673;</a></li>
+						</ul>
+						<div className="jsc-next-trigger next-trigger" onClick={this.slideToNext.bind(this)}>&gt;</div>
+					</div>
+				</div>
+			)
+		}
+	}
+
+	ReactDOM.render(
+		<IndicatorCarousel />,
+		document.getElementById("jsi-carousel-wrapper")
+	);
+</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-counter-trigger"></div> 
+<script type="text/babel">
+	class Increment extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {value: 0};
+		}
+		raiseValue(){
+			this.state.value++;
+			this.showValue();
+		}
+		showValue(){
+			console.log(this.state.value);
+		}
+		render(){
+			return(
+				<div className="answer-box">
+					<input type="button" value="increment" id="jsi-increment-trigger" onClick={this.raiseValue.bind(this)}/>
+				</div>
+			);
+		}
+	}
+
+	class Counter extends Increment{
+		constructor(){
+			
+		}
+		lowerValue(){
+			this.state.value--;
+			this.showValue();
+		}
+		render(){
+			return(
+				<div className="answer-box">
+					<input type="button" value="increment" id="jsi-increment-trigger" onClick={this.raiseValue.bind(this)}/>
+					<input type="button" value="decrement" id="jsi-decrement-trigger" onClick={this.lowerValue.bind(this)}/>
+				</div>
+			);
+		}
+	}
+
+	ReactDOM.render(
+		<Counter />,
+		document.getElementById('jsi-counter-trigger')
+	);
+</script>
+</body>
+</html>

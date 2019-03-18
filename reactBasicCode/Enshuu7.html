@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+		.login-id-container{
+			float:left;
+			transition : opacity 0.5s linear;
+		}
+		.password-container{
+			float:left;
+			transition : opacity 0.5s linear;
+		}
+		.disable{
+			opacity: 0;
+		}
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-login-form-wrapper"></div>
+<script type="text/babel">
+	class Login extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {status : 0};
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			this.idForm = 
+		}
+		submitId(event){
+			var temp = document.getElementById("writtenId").value;
+			if(temp.length == 0){
+				return;
+			}
+			document.getElementsByClassName("login-id-container")[0].classList.add("disable");
+		}
+		submitPassword(){
+			
+		}
+		goPrevious(){
+
+		}
+		initiateCrossFade(event){
+			if(this.state.status == 0){
+				// event.target.style.display = "none";
+			} else if(this.state.status == 1){
+				
+			}	
+		}
+		render(){
+			return(
+				<div className="login-form-container">
+					<div className="login-id-container" onTransitionEnd={this.initiateCrossFade.bind(this)}>
+						ログインID
+						<input defaultValue="" type="text" id="writtenId"/>
+						<input value="送信" type="submit" onClick={this.submitId.bind(this)}/>
+					</div>
+					<div className="password-container disable">
+						パスワード
+						<input defaultValue="" type="password" id="writtenPassword"/>
+						<input value="送信" type="submit" onClick={this.submitPassword.bind(this)}/>
+						<input value="戻る" type="button" onClick={this.goPrevious.bind(this)}/>
+					</div>
+				</div>
+			)
+		}
+	}
+
+	ReactDOM.render(
+		<Login />,
+		document.getElementById("jsi-login-form-wrapper")
+	);
+</script>
+</body>
+</html>
