@@ -33,8 +33,8 @@
 			justify-content: center;
 			margin-top: 10px;
 		}
-		#jsi-previous-trigger,
-		#jsi-next-trigger{
+		.jsc-previous-trigger,
+		.jsc-next-trigger{
 			display: inline-block;
 			text-decoration: none;
 			width: 2rem;
@@ -84,23 +84,8 @@
 				return;
 			}
 			this.setState({currentPage : index});
-			this.decoratePage();
-		}
-		decoratePage(){
-			if(this.state.currentPage <= 0){
-				document.getElementById("jsi-previous-trigger").classList.add("disable");
-			} else {
-				document.getElementById("jsi-previous-trigger").classList.remove("disable");
-			}
-			
-			if(this.state.currentPage >= this.maxPage){
-				document.getElementById("jsi-next-trigger").classList.add("disable");
-			} else {
-				document.getElementById("jsi-next-trigger").classList.remove("disable");
-			}
 		}
 		render(){
-			console.log("parent index : "+this.state.currentPage);
 			const paginationForm = this.paginations.map((pagination, index)=>
 				<Pages key={index} currentPage={this.state.currentPage} maxPage={pagination} onChangeCurrentPage={this.changeCurrentPage.bind(this)}/>
 			);
@@ -130,12 +115,13 @@
 		}
 		moveToNext(){
 			if(this.currentPage > this.maxPage){
+				this.currentPage = this.maxPage;
 				return;
 			}
 
 			this.props.onChangeCurrentPage(++this.currentPage,this.maxPage);
-			// this.decoratePage();
-		}
+			this.decoratePage();
+		} 
 		moveToPrevious(){
 			if(this.currentPage < 0){
 				this.currentPage = 0;
@@ -143,26 +129,45 @@
 			}
 
 			this.props.onChangeCurrentPage(--this.currentPage,this.maxPage);
-			// this.decoratePage();
+			this.decoratePage();
 		}
 		moveByIndicator(index){
 			this.currentPage = index;
 
 			this.props.onChangeCurrentPage(this.currentPage,this.maxPage);
-			// this.decoratePage();
+			this.decoratePage();
+		}
+		decoratePage(){
+			if(this.currentPage <= 0){
+				document.getElementsByClassName("jsc-previous-trigger")[0].classList.add("disable");
+			} else {
+				document.getElementsByClassName("jsc-previous-trigger")[0].classList.remove("disable");
+			}
+			
+			if(this.currentPage >= this.maxPage){
+				document.getElementsByClassName("jsc-next-trigger")[0].classList.add("disable");
+			} else {
+				document.getElementsByClassName("jsc-next-trigger")[0].classList.remove("disable");
+			}
 		}
 		render(){
-			console.log("child index : "+this.currentPage);
+			this.currentPage = this.props.currentPage; 
+			if(this.currentPage > this.maxPage){
+				this.currentPage = this.maxPage;
+			}
+			if(this.currentPage < 0){
+				this.currentPage = 0;
+			}
 			const pageLists = this.pagesArray.map((page, index)=>
-				<li key={index} value={index} onClick={this.moveByIndicator.bind(this,index)} className={this.props.currentPage == page ? "active" : ""}>{page+1}</li>
+				<li key={index} value={index} onClick={this.moveByIndicator.bind(this,index)} className={this.currentPage == page ? "active" : ""}>{page+1}</li>
 			);
 			return(
 				<div>
-					<a id="jsi-previous-trigger" className="disable" onClick={this.moveToPrevious.bind(this)}>&lt;</a>
+					<a id="jsi-previous-trigger" className="jsc-previous-trigger disable" onClick={this.moveToPrevious.bind(this)}>&lt;</a>
 					<ul id="pageList">
 						{pageLists}
 					</ul>	
-					<a id="jsi-next-trigger" onClick={this.moveToNext.bind(this)}>&gt;</a>
+					<a id="jsi-next-trigger" className="jsc-next-trigger" onClick={this.moveToNext.bind(this)}>&gt;</a>
 				</div>
 			);
 		}
