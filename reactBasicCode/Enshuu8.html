@@ -36,6 +36,14 @@
 		#jsi-previous-trigger,
 		#jsi-next-trigger{
 			display: inline-block;
+			text-decoration: none;
+			width: 2rem;
+			height: 2.5rem;
+			background-color : rgba(153, 170, 238, 0.514);
+			border-radius: 0.3rem;
+			text-align: center;
+			vertical-align: middle;
+			line-height: 250%;
 		}
 		#jsi-pagination-container > div{
 			width:100%;
@@ -76,6 +84,20 @@
 				return;
 			}
 			this.setState({currentPage : index});
+			this.decoratePage();
+		}
+		decoratePage(){
+			if(this.state.currentPage <= 0){
+				document.getElementById("jsi-previous-trigger").classList.add("disable");
+			} else {
+				document.getElementById("jsi-previous-trigger").classList.remove("disable");
+			}
+			
+			if(this.state.currentPage >= this.maxPage){
+				document.getElementById("jsi-next-trigger").classList.add("disable");
+			} else {
+				document.getElementById("jsi-next-trigger").classList.remove("disable");
+			}
 		}
 		render(){
 			console.log("parent index : "+this.state.currentPage);
@@ -98,7 +120,6 @@
 			this.init();
 		}
 		init(){
-			console.log("INIT : "+this.currentPage);
 			this.setParameters();
 		}
 		setParameters(){
@@ -113,7 +134,7 @@
 			}
 
 			this.props.onChangeCurrentPage(++this.currentPage,this.maxPage);
-			this.decoratePage();
+			// this.decoratePage();
 		}
 		moveToPrevious(){
 			if(this.currentPage < 0){
@@ -122,29 +143,13 @@
 			}
 
 			this.props.onChangeCurrentPage(--this.currentPage,this.maxPage);
-			this.decoratePage();
+			// this.decoratePage();
 		}
 		moveByIndicator(index){
 			this.currentPage = index;
 
 			this.props.onChangeCurrentPage(this.currentPage,this.maxPage);
-			this.decoratePage();
-		}
-		decoratePage(){
-			if(this.currentPage <= 0){
-				document.getElementById("jsi-previous-trigger").classList.add("disable");
-			} else {
-				document.getElementById("jsi-previous-trigger").classList.remove("disable");
-			}
-			
-			if(this.currentPage >= this.maxPage){
-				document.getElementById("jsi-next-trigger").classList.add("disable");
-			} else {
-				document.getElementById("jsi-next-trigger").classList.remove("disable");
-			}
-		}
-		synchronizePage(index){
-			this.currentPage = index;
+			// this.decoratePage();
 		}
 		render(){
 			console.log("child index : "+this.currentPage);
@@ -153,11 +158,11 @@
 			);
 			return(
 				<div>
-					<li id="jsi-previous-trigger" className="disable" onClick={this.moveToPrevious.bind(this)}>&lt;</li>
+					<a id="jsi-previous-trigger" className="disable" onClick={this.moveToPrevious.bind(this)}>&lt;</a>
 					<ul id="pageList">
 						{pageLists}
 					</ul>	
-					<li id="jsi-next-trigger" onClick={this.moveToNext.bind(this)}>&gt;</li>
+					<a id="jsi-next-trigger" onClick={this.moveToNext.bind(this)}>&gt;</a>
 				</div>
 			);
 		}
