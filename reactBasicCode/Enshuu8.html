@@ -4,26 +4,51 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 	<title>リピーター(React)</title>
 	<style>
+		*{
+			margin:0;
+			padding:0;
+			border : 0;
+		}
 		ul{
+			display: inline-block;
 			list-style-type: none;
+			margin-bottom: 10px;
 		}
 		li{
-			
 			display: inline-block;
 			width: 2rem;
 			height: 2.5rem;
-			background-color : #9AE;
-			border-radius: 1rem;
+			background-color : rgba(153, 170, 238, 0.514);
+			border-radius: 0.3rem;
 			text-align: center;
 			vertical-align: middle;
-			line-height: 200%;
+			line-height: 250%;
 			margin: 0 10px;
 		}
+		li:hover{
+			cursor:pointer;
+		}
 		#jsi-pagination-wrapper{
-			width: 100%;
-			margin: 0 auto;
+			display: flex;
+			justify-content: center;
+			margin-top: 10px;
+		}
+		#jsi-previous-trigger,
+		#jsi-next-trigger{
+			display: inline-block;
+		}
+		#jsi-pagination-container > div{
+			width:100%;
+			text-align: center;
 		}
 		.disable{
+			color: #FFF;
+		}
+		.disable:hover{
+			cursor: unset;
+		}
+		.active{
+			background-color : #f39F;
 			color: #FFF;
 		}
 	</style>
@@ -38,15 +63,24 @@
 		constructor(props){
 			super(props);
 			this.state = {currentPage: 0};
-			this.paginations = [10, 10, 5];
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			this.paginations = [9, 9, 4];
+		}
+		changeCurrentPage(index,maxPage){
+			if(index < 0 || index > maxPage){
+				return;
+			}
+			this.setState({currentPage : index});
 		}
 		render(){
+			console.log("parent index : "+this.state.currentPage);
 			const paginationForm = this.paginations.map((pagination, index)=>
-				<ul key={index}>
-					<li id="jsi-previous-trigger" className="disable">&lt;</li>
-					<Pages maxPage={pagination} currentPage={this.state.currentPage}/>
-					<li id="jsi-next-trigger">&gt;</li>
-				</ul>	
+				<Pages key={index} currentPage={this.state.currentPage} maxPage={pagination} onChangeCurrentPage={this.changeCurrentPage.bind(this)}/>
 			);
 			return(
 				<div id="jsi-pagination-container">
@@ -59,28 +93,72 @@
 	class Pages extends React.Component{
 		constructor(props){
 			super(props);
-			this.state={
-				currentPage : this.props.currentPage,
-				maxPage : this.props.maxPage
-			}
+			this.currentPage = this.props.currentPage;
+			this.maxPage = this.props.maxPage;
 			this.init();
 		}
 		init(){
+			console.log("INIT : "+this.currentPage);
 			this.setParameters();
 		}
 		setParameters(){
 			this.pagesArray = [];
-			for(var i = 0; i < this.state.maxPage ; i++){
-				this.pagesArray.push(i+1);
+			for(var i = 0 ; i <= this.maxPage ; i++){
+				this.pagesArray.push(i);
 			}
-			console.log();
+		}
+		moveToNext(){
+			if(this.currentPage > this.maxPage){
+				return;
+			}
+
+			this.props.onChangeCurrentPage(++this.currentPage,this.maxPage);
+			this.decoratePage();
+		}
+		moveToPrevious(){
+			if(this.currentPage < 0){
+				this.currentPage = 0;
+				return;
+			}
+
+			this.props.onChangeCurrentPage(--this.currentPage,this.maxPage);
+			this.decoratePage();
+		}
+		moveByIndicator(index){
+			this.currentPage = index;
+
+			this.props.onChangeCurrentPage(this.currentPage,this.maxPage);
+			this.decoratePage();
+		}
+		decoratePage(){
+			if(this.currentPage <= 0){
+				document.getElementById("jsi-previous-trigger").classList.add("disable");
+			} else {
+				document.getElementById("jsi-previous-trigger").classList.remove("disable");
+			}
+			
+			if(this.currentPage >= this.maxPage){
+				document.getElementById("jsi-next-trigger").classList.add("disable");
+			} else {
+				document.getElementById("jsi-next-trigger").classList.remove("disable");
+			}
+		}
+		synchronizePage(index){
+			this.currentPage = index;
 		}
 		render(){
-			const lists = this.pagesArray.map((pages, index)=>
-				<li key={index}>{pages}</li>
+			console.log("child index : "+this.currentPage);
+			const pageLists = this.pagesArray.map((page, index)=>
+				<li key={index} value={index} onClick={this.moveByIndicator.bind(this,index)} className={this.props.currentPage == page ? "active" : ""}>{page+1}</li>
 			);
 			return(
-				{lists}
+				<div>
+					<li id="jsi-previous-trigger" className="disable" onClick={this.moveToPrevious.bind(this)}>&lt;</li>
+					<ul id="pageList">
+						{pageLists}
+					</ul>	
+					<li id="jsi-next-trigger" onClick={this.moveToNext.bind(this)}>&gt;</li>
+				</div>
 			);
 		}
 	}
