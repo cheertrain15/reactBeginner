@@ -18,7 +18,7 @@
 			position: relative;
 			top: -1.5px;
 			background-color: #DDD;
-			margin: 0 auto;
+			margin: 10px auto 0;
 		}
 
 		.data-display{
@@ -43,22 +43,40 @@
 			super(props);
 			this.dataStorage = [];
 			this.state = {
-				dataDisplay : this.dataStorage,
+				dataDisplay : [],
 				textValue : ""
 			};
 		}
 		addData(){
+			let currentTextValue = document.getElementsByClassName("jsc-textbox")[0].value;
+			if(currentTextValue.length == 0){
+				return;
+			}
+			this.dataStorage.push(
+				<div key={this.state.dataDisplay.length}>
+					<input type="text" className="jsc-textbox textbox" onBlur={this.updateData.bind(this)}/>
+					<input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>
+				</div>
+				);
 
+			this.setState({
+				dataDisplay : this.dataStorage
+			});
+		}
+		updateData(event){
+			console.log(event.target.value);
 		}
 		eraseData(){
-
+			
 		}
 		render(){
 			return(
 				<div>
-					<input type="text" className="jsc-textbox textbox" ref={null} />
-					<input type="button" className="jsc-button button" value="作成" onClick={null}/>
-					<div className="jsc-data-display data-display"></div>
+					<input type="text" className="jsc-textbox textbox" ref={null}/>
+					<input type="button" className="jsc-button button" value="作成" onClick={this.addData.bind(this)}/>
+					<div className="jsc-data-display data-display">
+						{this.state.dataDisplay}
+					</div>
 				</div>
 			);
 		}
