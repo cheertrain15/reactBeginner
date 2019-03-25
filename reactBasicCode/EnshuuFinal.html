@@ -7,7 +7,7 @@
 		.todo-wrapper > div{
 			width: 100%;
 			text-align: center;
-			margin-top: 10%;
+			margin-top: 5%;
 		}
 		.textbox{
 			width:400px;
@@ -19,6 +19,15 @@
 			top: -1.5px;
 			background-color: #DDD;
 			margin: 0 auto;
+		}
+
+		.data-display{
+			display:block;
+
+			width: 45%;
+			height: 50px;
+			margin: 20px auto 0;
+			background-color: rgba(50,200,150,1);
 		}
 	</style>
 	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
@@ -32,12 +41,24 @@
 	class Todo extends React.Component{
 		constructor(props){
 			super(props);
+			this.dataStorage = [];
+			this.state = {
+				dataDisplay : this.dataStorage,
+				textValue : ""
+			};
+		}
+		addData(){
+
+		}
+		eraseData(){
+
 		}
 		render(){
 			return(
 				<div>
 					<input type="text" className="jsc-textbox textbox" ref={null} />
 					<input type="button" className="jsc-button button" value="作成" onClick={null}/>
+					<div className="jsc-data-display data-display"></div>
 				</div>
 			);
 		}
