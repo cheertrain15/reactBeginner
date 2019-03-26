@@ -6,8 +6,8 @@
 	<style>
 		.todo-wrapper > div{
 			width: 100%;
-			text-align: center;
-			margin-top: 5%;
+			text-align: left;
+			margin-top: 5% auto;
 		}
 		.textbox{
 			position: relative;
@@ -55,68 +55,70 @@
 		constructor(props){
 			super(props);
 			this.state = {
-				dataDisplay : window.localStorage.getItem("reactSample") == null ? [] : JSON.parse(window.localStorage.getItem("reactSample"))
+				data : []
 			};
+			this.dataArray = [];
+			this.textbox = null;
 		}
-		addData(){
-			let currentTextValue = document.getElementsByClassName("jsc-textbox")[0].value;
+		addData(event){
+			let currentTextValue = this.textbox.value;
 			if(currentTextValue.length == 0){
 				return;
 			}
-
-			let newTodo = this.state.dataDisplay;
-
-			newTodo.push(
-				<div key={this.state.dataDisplay.length} index={this.state.dataDisplay.length} className="new-todo">
-					<input type="text" className="jsc-textbox textbox" onBlur={this.updateData.bind(this)} defaultValue={currentTextValue}/>
-					<input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>
-				</div>
-			);
-
+			
+			this.dataArray.push({
+				textValue : this.textbox.value, 
+				deleted : false
+			});
+			
 			this.setState({
-				dataDisplay : newTodo
+				data : this.dataArray
 			});
 
-			document.getElementsByClassName("jsc-textbox")[0].value = "";
+			this.textbox.value = "";
 		}
 		updateData(event){
-			const currentDiv = event.target.parentNode;
-			const key = currentDiv.getAttribute("index");
-
-			let updatedTodo = this.state.dataDisplay;			
-			updatedTodo.splice(key, 1 , currentDiv);
-
-			this.setState({
-				dataDisplay : updatedTodo
+			if(event.target.classList.contains("erased-data")){
+				return;
+			}
+			const index = event.target.parentNode.getAttribute("index");
+			const currentTextValue = event.target.value;
+			this.setState((prevState)=>{
+				prevState.data[index].textValue = currentTextValue;
+				return {
+					data : prevState.data
+				};
 			});
 		}
 		eraseData(event){
+			console.log("erase");
 			const currentButton = event.target;
-			const key = currentButton.parentNode.getAttribute("index");
-
+			const index = currentButton.parentNode.getAttribute("index");
 			currentButton.classList.add("erased-button");
 			currentButton.previousSibling.classList.add("erased-data");
 			currentButton.previousSibling.setAttribute("readonly", "readonly");
 
-			let deletedTodo = this.state.dataDisplay;
-			
-			deletedTodo.splice(key, 1 , currentButton.parentNode);
-
-			this.setState({
-				dataDisplay : deletedTodo
+			this.setState((prevState)=>{
+				prevState.data[index].deleted = true;
+				return {
+					data : prevState.data
+				};
 			});
 		}
 		render(){
-			//load JSON DATA in here//
-			// console.log(JSON.stringify(this.state.dataDisplay));
-			console.log(this.state.dataDisplay);
+			console.log(this.state.data);
+			const textboxContent = <input type="text" className="jsc-textbox textbox"/>;
+			const toDo = this.state.data.map((data,index)=>
+				<div key={index} className="jsc-box" index={index}>
+					<input type="text" className="jsc-textbox textbox" defaultValue={data.textValue} onBlur={this.updateData.bind(this)}/>
+					{data.deleted ? null : <input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>}
+				</div>
+			);
 			return(
-				<div>
-					<input type="text" className="jsc-textbox textbox" ref={null}/>
+				<div id="jsi-box">
+					<input type="text" className="jsc-textbox textbox" ref={(textboxContent) => {this.textbox = textboxContent}}/>
 					<input type="button" className="jsc-button button" value="作成" onClick={this.addData.bind(this)}/>
-					<div className="jsc-data-display data-display">
-						{this.state.dataDisplay}
-					</div>
+					{toDo}
 				</div>
 			);
 		}
@@ -126,6 +128,8 @@
 		<Todo />,
 		document.getElementsByClassName("jsc-todo-wrapper")[0]
 	);
+
+	
 </script>
 </body>
 </html>
