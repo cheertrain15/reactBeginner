@@ -96,6 +96,7 @@
 			this.state = {
 				currentIndex : 0
 			};
+			this.currentIndex = 0;
 			this.init();
 		}
 		init(){
@@ -113,33 +114,29 @@
 			this.maxIndex = this.imageData.length-1;
 		}
 		increaseIndex(){
-			this.setState((prevState)=>{
-				return { currentIndex : prevState.currentIndex+1};
-			});
+			this.currentIndex++;
 			this.slideImage();
 		}
 		decreaseIndex(){
-			this.setState((prevState)=>{
-				return { currentIndex : prevState.currentIndex-1};
-			});
+			this.currentIndex--;
 			this.slideImage();
 		}
 		changeIndex(index){
-			this.setState(()=>{
-				return { currentIndex : index};
-			});
+			this.currentIndex = index;
 			this.slideImage();
 		}
 		slideImage(){
-			const index = this.state.currentIndex;
 			const carouselTape = document.querySelector(".jsc-carousel-tape");
 			const slideDistance = carouselTape.querySelectorAll("img")[0].width;
 			
-			carouselTape.style.left = (slideDistance*(-index))+"px";
-
+			carouselTape.style.transition = "all 0.5s linear";
+			carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";
+			
+			this.setState({
+				currentIndex : this.currentIndex
+			})
 		}
 		render(){
-			console.log("current Index : "+this.state.currentIndex);
 			const imageList = this.imageData.map((image, index)=>
 				<img key={index} index={index} src={image} alt="Carousel Image"/>
 			);
@@ -151,12 +148,11 @@
 						</div>
 					</div>
 					<DirectionButton 
-						maxIndex={this.maxIndex} 
 						increaseIndex={this.increaseIndex.bind(this)}
 						decreaseIndex={this.decreaseIndex.bind(this)}
 					/>
 					<Indicator 
-						maxIndex={this.maxIndex} 
+						currentNumber={this.state.currentIndex}
 						imageData={this.imageData} 
 						changeIndexByIndicator={this.changeIndex.bind(this)}
 					/>
@@ -194,7 +190,7 @@
 		}
 		render(){
 			const indicators = this.props.imageData.map((image,index)=>
-				<li key={index} className={index == 0 ? "active" : ""} onClick={this.changeIndicator.bind(this,index)}>
+				<li key={index} className={index == this.props.currentNumber ? "active" : ""} onClick={this.changeIndicator.bind(this,index)}>
 					<a>
 						&#9679;
 					</a>
