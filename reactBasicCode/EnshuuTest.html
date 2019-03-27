@@ -190,11 +190,13 @@
 		}
 		render(){
 			const indicators = this.props.imageData.map((image,index)=>
-				<li key={index} className={index == this.props.currentNumber ? "active" : ""} onClick={this.changeIndicator.bind(this,index)}>
-					<a>
-						&#9679;
-					</a>
-				</li>
+				index == this.props.imageData.length-1 ? null : (
+					<li key={index} className={index == this.props.currentNumber ? "active" : ""} onClick={this.changeIndicator.bind(this,index)}>
+						<a>
+							&#9679;
+						</a>
+					</li>
+				)
 			);
 			return (
 				<div className="jsc-indicators-wrapper indicators-wrapper">
