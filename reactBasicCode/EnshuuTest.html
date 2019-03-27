@@ -126,17 +126,40 @@
 			this.slideImage();
 		}
 		slideImage(){
+			this.setState({
+				currentIndex : this.currentIndex
+			});
 			const carouselTape = document.querySelector(".jsc-carousel-tape");
 			const slideDistance = carouselTape.querySelectorAll("img")[0].width;
 			
-			carouselTape.style.transition = "all 0.5s linear";
-			carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";
-			
-			this.setState({
-				currentIndex : this.currentIndex
-			})
+			carouselTape.style.transition = "all 0.7s ease-in-out";
+			carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";	
+
+			if(this.currentIndex >= this.maxIndex){
+				this.setState({
+					currentIndex : 0
+				});
+			}
+
+			if(this.currentIndex > this.maxIndex){
+				this.currentIndex = 0;
+				carouselTape.style.transition = "all 0s ease-in-out";
+				carouselTape.style.left = 0+"px";
+				this.setState({
+					currentIndex : 0
+				});
+			} else if (this.currentIndex < 0){
+				this.currentIndex = this.maxIndex;
+				carouselTape.style.transition = "all 0s ease-in-out";
+				carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";
+				this.setState({
+					currentIndex : 0
+				});
+			}
+
 		}
 		render(){
+			console.log(this.state.currentIndex);
 			const imageList = this.imageData.map((image, index)=>
 				<img key={index} index={index} src={image} alt="Carousel Image"/>
 			);
