@@ -56,6 +56,32 @@
 			clear : both;
 		}
 
+		.indicators-wrapper{
+			clear : both;
+			width: 100%;
+			text-align: center;
+		}
+
+		.indicators{
+			list-style-type: none;
+			font-size: 20px;
+		}
+
+		.indicators > li{
+			display: inline-block;
+		}
+
+		.indicators > li+li{
+			margin-left : 15px;
+		}
+
+		.indicators a{
+			cursor: pointer;
+		}
+
+		.active{
+			color: #FA0;
+		}
 	</style>
 	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -67,13 +93,11 @@
 	class Carousel extends React.Component{
 		constructor(props){
 			super(props);
-			this.init();
-		}
-		init(){
-			this.setParameters();
-		}
-		setParameters(){
+			this.state = {
+				currentIndex : 0
+			}
 			
+		
 		}
 		render(){
 			return(
@@ -88,22 +112,42 @@
 							<img src="./img/sample1.jpg" alt="Carousel Image"/>
 						</div>
 					</div>
-					<div className="jsc-trigger trigger">
-						<div className="jsc-previous-trigger previous-trigger" onClick={null}>&lt;</div>
-						<div className="jsc-next-trigger next-trigger" onClick={null}>&gt;</div>
-					</div>
-					<div className="number-sign">{null}</div>
+					<DirectionButton />
+					<Indicator />
 				</div>
 			)
 		}
 	}
 
 	class DirectionButton extends React.Component{
-
+		constructor(props){
+			super(props);
+		}
+		render(){
+			return(
+				<div className="jsc-trigger trigger">
+					<div className="jsc-previous-trigger previous-trigger" onClick={null}>&lt;</div>
+					<div className="jsc-next-trigger next-trigger" onClick={null}>&gt;</div>
+				</div>
+			);
+		}
 	}
 
 	class Indicator extends React.Component{
-		
+		render(){
+			return (
+				<div className="jsc-indicators-wrapper indicators-wrapper">
+					<ul className="jsc-indicators indicators">
+						<li className="active"><a>&#9679;</a></li>
+						<li><a>&#9679;</a></li>
+						<li><a>&#9679;</a></li>
+						<li><a>&#9679;</a></li>
+						<li><a>&#9679;</a></li>
+						<li><a>&#9679;</a></li>
+					</ul>
+				</div>
+			)
+		}
 	}
 
 	ReactDOM.render(
