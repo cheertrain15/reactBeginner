@@ -95,25 +95,36 @@
 			super(props);
 			this.state = {
 				currentIndex : 0
-			}
-			
-		
+			};
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			this.imageData = [
+				"./img/sample1.jpg",
+				"./img/sample2.jpg",
+				"./img/sample3.jpg",
+				"./img/sample4.jpg",
+				"./img/sample5.jpg",
+				"./img/sample1.jpg"
+			];
+			this.maxIndex = this.imageData.length-1;
 		}
 		render(){
+			const imageList = this.imageData.map((image, index)=>
+				<img key={index} index={index} src={image} alt="Carousel Image"/>
+			);
 			return(
 				<div>
 					<div id="jsi-carousel-window" className="jsc-carousel-window carousel-window">
 						<div id="jsi-carousel-tape" className="jsc-carousel-tape carousel-tape">
-							<img src="./img/sample1.jpg" alt="Carousel Image"/>
-							<img src="./img/sample2.jpg" alt="Carousel Image"/>
-							<img src="./img/sample3.jpg" alt="Carousel Image"/>
-							<img src="./img/sample4.jpg" alt="Carousel Image"/>
-							<img src="./img/sample5.jpg" alt="Carousel Image"/>
-							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+							{imageList}
 						</div>
 					</div>
-					<DirectionButton />
-					<Indicator />
+					<DirectionButton maxIndex={this.maxIndex} currentIndex={this.state.currentIndex}/>
+					<Indicator maxIndex={this.maxIndex} imageData={this.imageData} currentIndex={this.state.currentIndex}/>
 				</div>
 			)
 		}
@@ -134,16 +145,17 @@
 	}
 
 	class Indicator extends React.Component{
+		constructor(props){
+			super(props);
+		}
 		render(){
+			const indicators = this.props.imageData.map((image,index)=>
+				<li key={index} className={index == 0 ? "active" : ""}><a>&#9679;</a></li>
+			);
 			return (
 				<div className="jsc-indicators-wrapper indicators-wrapper">
 					<ul className="jsc-indicators indicators">
-						<li className="active"><a>&#9679;</a></li>
-						<li><a>&#9679;</a></li>
-						<li><a>&#9679;</a></li>
-						<li><a>&#9679;</a></li>
-						<li><a>&#9679;</a></li>
-						<li><a>&#9679;</a></li>
+						{indicators}
 					</ul>
 				</div>
 			)
