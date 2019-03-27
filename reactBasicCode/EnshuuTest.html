@@ -112,7 +112,34 @@
 			];
 			this.maxIndex = this.imageData.length-1;
 		}
+		increaseIndex(){
+			this.setState((prevState)=>{
+				return { currentIndex : prevState.currentIndex+1};
+			});
+			this.slideImage();
+		}
+		decreaseIndex(){
+			this.setState((prevState)=>{
+				return { currentIndex : prevState.currentIndex-1};
+			});
+			this.slideImage();
+		}
+		changeIndex(index){
+			this.setState(()=>{
+				return { currentIndex : index};
+			});
+			this.slideImage();
+		}
+		slideImage(){
+			const index = this.state.currentIndex;
+			const carouselTape = document.querySelector(".jsc-carousel-tape");
+			const slideDistance = carouselTape.querySelectorAll("img")[0].width;
+			
+			carouselTape.style.left = (slideDistance*(-index))+"px";
+
+		}
 		render(){
+			console.log("current Index : "+this.state.currentIndex);
 			const imageList = this.imageData.map((image, index)=>
 				<img key={index} index={index} src={image} alt="Carousel Image"/>
 			);
@@ -123,8 +150,16 @@
 							{imageList}
 						</div>
 					</div>
-					<DirectionButton maxIndex={this.maxIndex} currentIndex={this.state.currentIndex}/>
-					<Indicator maxIndex={this.maxIndex} imageData={this.imageData} currentIndex={this.state.currentIndex}/>
+					<DirectionButton 
+						maxIndex={this.maxIndex} 
+						increaseIndex={this.increaseIndex.bind(this)}
+						decreaseIndex={this.decreaseIndex.bind(this)}
+					/>
+					<Indicator 
+						maxIndex={this.maxIndex} 
+						imageData={this.imageData} 
+						changeIndexByIndicator={this.changeIndex.bind(this)}
+					/>
 				</div>
 			)
 		}
@@ -134,11 +169,17 @@
 		constructor(props){
 			super(props);
 		}
+		increaseCurrentIndex(){
+			this.props.increaseIndex()
+		}
+		decreaseCurrentIndex(){
+			this.props.decreaseIndex();
+		}
 		render(){
 			return(
 				<div className="jsc-trigger trigger">
-					<div className="jsc-previous-trigger previous-trigger" onClick={null}>&lt;</div>
-					<div className="jsc-next-trigger next-trigger" onClick={null}>&gt;</div>
+					<div className="jsc-previous-trigger previous-trigger" onClick={this.decreaseCurrentIndex.bind(this)}>&lt;</div>
+					<div className="jsc-next-trigger next-trigger" onClick={this.increaseCurrentIndex.bind(this)}>&gt;</div>
 				</div>
 			);
 		}
@@ -148,9 +189,16 @@
 		constructor(props){
 			super(props);
 		}
+		changeIndicator(index){
+			this.props.changeIndexByIndicator(index);
+		}
 		render(){
 			const indicators = this.props.imageData.map((image,index)=>
-				<li key={index} className={index == 0 ? "active" : ""}><a>&#9679;</a></li>
+				<li key={index} className={index == 0 ? "active" : ""} onClick={this.changeIndicator.bind(this,index)}>
+					<a>
+						&#9679;
+					</a>
+				</li>
 			);
 			return (
 				<div className="jsc-indicators-wrapper indicators-wrapper">
