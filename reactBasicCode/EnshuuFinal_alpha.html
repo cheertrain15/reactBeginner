@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+		.todo-wrapper > div{
+			width: 100%;
+			text-align: left;
+			margin-top: 5% auto;
+		}
+		.textbox{
+			position: relative;
+			width:400px;
+			margin: 0 auto;
+			height: 14px;
+		}
+		.button{
+			position: relative;
+			top: -1.5px;
+			background-color: #DDD;
+			left: -36px;
+		}
+
+		.data-display{
+			display:block;
+			width: 45%;
+			margin: 10px auto 0;
+		}
+
+		.erased-data{
+			background-color: #999;
+			text-decoration: line-through;
+		}
+
+		.erased-button{
+			z-index: -1;
+			opacity: 0;
+			height:0;
+		}
+		
+		.new-todo{
+			margin-top: 10px;
+		}
+
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-todo-wrapper" class="jsc-todo-wrapper todo-wrapper"></div>
+<script type="text/babel">
+	class Todo extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {
+				data : []
+			};
+			// this.dataArray = [];
+			this.textbox = null;
+		}
+		addData(event){
+			let currentTextValue = this.textbox.value;
+			if(currentTextValue.length == 0){
+				return;
+			}
+			
+			// this.dataArray.push({
+			// 	textValue : this.textbox.value, 
+			// 	deleted : false
+			// });
+			
+			this.setState({
+				data : this.dataArray
+			});
+
+			this.textbox.value = "";
+		}
+		updateData(event){
+			if(event.target.classList.contains("erased-data")){
+				return;
+			}
+			const index = event.target.parentNode.getAttribute("index");
+			const currentTextValue = event.target.value;
+			this.setState((prevState)=>{
+				prevState.data[index].textValue = currentTextValue;
+				return {
+					data : prevState.data
+				};
+			});
+		}
+		eraseData(event){
+			console.log("erase");
+			const currentButton = event.target;
+			const index = currentButton.parentNode.getAttribute("index");
+			currentButton.classList.add("erased-button");
+			currentButton.previousSibling.classList.add("erased-data");
+			currentButton.previousSibling.setAttribute("readonly", "readonly");
+
+			this.setState((prevState)=>{
+				prevState.data[index].deleted = true;
+				return {
+					data : prevState.data
+				};
+			});
+		}
+		render(){
+			console.log(this.state.data);
+			const textboxContent = <input type="text" className="jsc-textbox textbox"/>;
+			const toDo = this.state.data.map((data,index)=>
+				<div key={index} className="jsc-box" index={index}>
+					<input type="text" className="jsc-textbox textbox" defaultValue={data.textValue} onBlur={this.updateData.bind(this)}/>
+					{data.deleted ? null : <input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>}
+				</div>
+			);
+			return(
+				<div id="jsi-box">
+					<input type="text" className="jsc-textbox textbox" ref={(textboxContent) => {this.textbox = textboxContent}}/>
+					<input type="button" className="jsc-button button" value="作成" onClick={this.addData.bind(this)}/>
+					{toDo}
+				</div>
+			);
+		}
+	}
+
+	ReactDOM.render(
+		<Todo />,
+		document.getElementsByClassName("jsc-todo-wrapper")[0]
+	);
+
+
+</script>
+</body>
+</html>
