@@ -57,7 +57,7 @@
 			this.state = {
 				data : []
 			};
-			// this.dataArray = [];
+			this.dataArray = [];
 			this.textbox = null;
 		}
 		addData(event){
@@ -66,10 +66,10 @@
 				return;
 			}
 			
-			// this.dataArray.push({
-			// 	textValue : this.textbox.value, 
-			// 	deleted : false
-			// });
+			this.dataArray.push({
+				textValue : this.textbox.value, 
+				deleted : false
+			});
 			
 			this.setState({
 				data : this.dataArray
@@ -128,8 +128,6 @@
 		<Todo />,
 		document.getElementsByClassName("jsc-todo-wrapper")[0]
 	);
-
-
 </script>
 </body>
 </html>

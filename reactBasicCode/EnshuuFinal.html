@@ -10,6 +10,7 @@
 			margin-top: 5%;
 		}
 		.textbox{
+			position: relative;
 			width:400px;
 			margin: 0 auto;
 			height: 14px;
@@ -18,17 +19,30 @@
 			position: relative;
 			top: -1.5px;
 			background-color: #DDD;
-			margin: 10px auto 0;
+			left: -36px;
 		}
 
 		.data-display{
 			display:block;
-
 			width: 45%;
-			height: 50px;
-			margin: 20px auto 0;
-			background-color: rgba(50,200,150,1);
+			margin: 10px auto 0;
 		}
+
+		.erased-data{
+			background-color: #999;
+			text-decoration: line-through;
+		}
+
+		.erased-button{
+			z-index: -1;
+			opacity: 0;
+			height:0;
+		}
+		
+		.new-todo{
+			margin-top: 10px;
+		}
+
 	</style>
 	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
 	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -37,14 +51,11 @@
 <body>
 	<div id="jsi-todo-wrapper" class="jsc-todo-wrapper todo-wrapper"></div>
 <script type="text/babel">
-	//https://www.skptricks.com/2018/06/append-or-prepend-html-using-reactjs.html
 	class Todo extends React.Component{
 		constructor(props){
 			super(props);
-			this.dataStorage = [];
 			this.state = {
-				dataDisplay : [],
-				textValue : ""
+				dataDisplay : window.localStorage.getItem("reactSample") == null ? [] : JSON.parse(window.localStorage.getItem("reactSample"))
 			};
 		}
 		addData(){
@@ -52,24 +63,53 @@
 			if(currentTextValue.length == 0){
 				return;
 			}
-			this.dataStorage.push(
-				<div key={this.state.dataDisplay.length}>
-					<input type="text" className="jsc-textbox textbox" onBlur={this.updateData.bind(this)}/>
+
+			let newTodo = this.state.dataDisplay;
+
+			newTodo.push(
+				<div key={this.state.dataDisplay.length} index={this.state.dataDisplay.length} className="new-todo">
+					<input type="text" className="jsc-textbox textbox" onBlur={this.updateData.bind(this)} defaultValue={currentTextValue}/>
 					<input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>
 				</div>
-				);
+			);
 
 			this.setState({
-				dataDisplay : this.dataStorage
+				dataDisplay : newTodo
 			});
+
+			document.getElementsByClassName("jsc-textbox")[0].value = "";
 		}
 		updateData(event){
-			console.log(event.target.value);
+			const currentDiv = event.target.parentNode;
+			const key = currentDiv.getAttribute("index");
+
+			let updatedTodo = this.state.dataDisplay;			
+			updatedTodo.splice(key, 1 , currentDiv);
+
+			this.setState({
+				dataDisplay : updatedTodo
+			});
 		}
-		eraseData(){
+		eraseData(event){
+			const currentButton = event.target;
+			const key = currentButton.parentNode.getAttribute("index");
+
+			currentButton.classList.add("erased-button");
+			currentButton.previousSibling.classList.add("erased-data");
+			currentButton.previousSibling.setAttribute("readonly", "readonly");
+
+			let deletedTodo = this.state.dataDisplay;
 			
+			deletedTodo.splice(key, 1 , currentButton.parentNode);
+
+			this.setState({
+				dataDisplay : deletedTodo
+			});
 		}
 		render(){
+			//load JSON DATA in here//
+			// console.log(JSON.stringify(this.state.dataDisplay));
+			console.log(this.state.dataDisplay);
 			return(
 				<div>
 					<input type="text" className="jsc-textbox textbox" ref={null}/>
