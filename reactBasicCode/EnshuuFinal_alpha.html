@@ -55,9 +55,9 @@
 		constructor(props){
 			super(props);
 			this.state = {
-				data : []
+				data : this.props.loadedData
 			};
-			this.dataArray = [];
+			this.dataArray = this.props.loadedData;
 			this.textbox = null;
 		}
 		addData(event){
@@ -76,6 +76,7 @@
 			});
 
 			this.textbox.value = "";
+			this.props.onSaveStatus(this.state.data);
 		}
 		updateData(event){
 			if(event.target.classList.contains("erased-data")){
@@ -83,35 +84,37 @@
 			}
 			const index = event.target.parentNode.getAttribute("index");
 			const currentTextValue = event.target.value;
-			this.setState((prevState)=>{
-				prevState.data[index].textValue = currentTextValue;
-				return {
-					data : prevState.data
-				};
+
+			this.dataArray[index].textValue = currentTextValue;
+
+			this.setState({
+				data: this.dataArray
 			});
+
+			this.props.onSaveStatus(this.state.data);
 		}
 		eraseData(event){
-			console.log("erase");
 			const currentButton = event.target;
 			const index = currentButton.parentNode.getAttribute("index");
 			currentButton.classList.add("erased-button");
 			currentButton.previousSibling.classList.add("erased-data");
 			currentButton.previousSibling.setAttribute("readonly", "readonly");
 
-			this.setState((prevState)=>{
-				prevState.data[index].deleted = true;
-				return {
-					data : prevState.data
-				};
+
+			this.dataArray[index].deleted = true;
+
+			this.setState({
+				data: this.dataArray
 			});
+	
+			this.props.onSaveStatus(this.state.data);
 		}
 		render(){
-			console.log(this.state.data);
 			const textboxContent = <input type="text" className="jsc-textbox textbox"/>;
 			const toDo = this.state.data.map((data,index)=>
 				<div key={index} className="jsc-box" index={index}>
-					<input type="text" className="jsc-textbox textbox" defaultValue={data.textValue} onBlur={this.updateData.bind(this)}/>
-					{data.deleted ? null : <input type="button" className="jsc-button button" value="削除" onClick={this.eraseData.bind(this)}/>}
+					<input type="text" className={data.deleted ? "jsc-textbox textbox erased-data" : "jsc-textbox textbox"} defaultValue={data.textValue} onBlur={this.updateData.bind(this)}/>
+					<input type="button" className={data.deleted ? "jsc-button button erased-button" : "jsc-button button"} value="削除" onClick={this.eraseData.bind(this)}/>
 				</div>
 			);
 			return(
@@ -124,8 +127,31 @@
 		}
 	}
 
+	class Status extends React.Component{
+		constructor(props){
+			super(props);
+			this.state = {
+				data: window.sessionStorage.getItem("moon") == undefined ? [] : JSON.parse(window.sessionStorage.getItem("moon"))
+			};
+			console.log(this.state.data);
+		}
+		saveStatus(data){
+			let savedStatus = data;
+			this.setState((prevState)=>{
+				data : prevState.data=savedStatus
+			});
+			window.sessionStorage.setItem("moon", JSON.stringify(this.state.data));
+			console.log(savedStatus);
+		}
+		render(){
+			return(
+				<Todo loadedData={this.state.data} onSaveStatus={this.saveStatus.bind(this)}/>
+			);
+		}
+	}
+
 	ReactDOM.render(
-		<Todo />,
+		<Status />,
 		document.getElementsByClassName("jsc-todo-wrapper")[0]
 	);
 </script>
