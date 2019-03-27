@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>リピーター(React)</title>
+	<style>
+		*, *::before, *::after{
+			border : 0;
+			padding: 0;
+			margin: 0;
+		}
+
+		.carousel-wrapper{
+			margin-top: 30px;
+		}
+
+		.carousel-window{
+			width: 800px;
+			height: 400px;
+			margin: 0 auto;
+			overflow: hidden;
+		}
+
+		.carousel-tape{
+			position: relative;
+			width: 4800px;
+			height: 400px;
+			left: 0;
+			transition: none;
+		}
+
+		.carousel-tape > img{
+			display:block;
+			float : left;
+		}
+
+		.trigger{
+			width: 200px;
+			margin: 20px auto 0;
+		}
+
+		.trigger > div:hover{
+			cursor: pointer;
+		}
+
+		.previous-trigger{
+			float: left;
+			
+		}
+
+		.next-trigger{
+			float: right;
+		}
+
+		.number-sign{
+			clear : both;
+		}
+
+	</style>
+	<script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+<body>
+	<div id="jsi-carousel-wrapper" class="jsc-carousel-wrapper carousel-wrapper"></div>
+<script type="text/babel">
+	class Carousel extends React.Component{
+		constructor(props){
+			super(props);
+			this.init();
+		}
+		init(){
+			this.setParameters();
+		}
+		setParameters(){
+			
+		}
+		render(){
+			return(
+				<div>
+					<div id="jsi-carousel-window" className="jsc-carousel-window carousel-window">
+						<div id="jsi-carousel-tape" className="jsc-carousel-tape carousel-tape">
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+							<img src="./img/sample2.jpg" alt="Carousel Image"/>
+							<img src="./img/sample3.jpg" alt="Carousel Image"/>
+							<img src="./img/sample4.jpg" alt="Carousel Image"/>
+							<img src="./img/sample5.jpg" alt="Carousel Image"/>
+							<img src="./img/sample1.jpg" alt="Carousel Image"/>
+						</div>
+					</div>
+					<div className="jsc-trigger trigger">
+						<div className="jsc-previous-trigger previous-trigger" onClick={null}>&lt;</div>
+						<div className="jsc-next-trigger next-trigger" onClick={null}>&gt;</div>
+					</div>
+					<div className="number-sign">{null}</div>
+				</div>
+			)
+		}
+	}
+
+	class DirectionButton extends React.Component{
+
+	}
+
+	class Indicator extends React.Component{
+		
+	}
+
+	ReactDOM.render(
+		<Carousel />,
+		document.getElementById("jsi-carousel-wrapper")
+	);
+</script>
+</body>
+</html>
