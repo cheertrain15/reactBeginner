@@ -135,6 +135,7 @@
 			carouselTape.style.transition = "all 0.7s ease-in-out";
 			carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";	
 
+			/*indicator .activate adding class*/
 			if(this.currentIndex >= this.maxIndex){
 				this.setState({
 					currentIndex : 0
@@ -157,9 +158,12 @@
 				});
 			}
 
+			carouselTape.addEventListener('transitionend', function(){
+				console.log("Anybody home????");
+			});
+
 		}
 		render(){
-			console.log(this.state.currentIndex);
 			const imageList = this.imageData.map((image, index)=>
 				<img key={index} index={index} src={image} alt="Carousel Image"/>
 			);
