@@ -97,6 +97,7 @@
 				currentIndex : 0
 			};
 			this.currentIndex = 0;
+			this.clickPrevention = false;
 			this.init();
 		}
 		init(){
@@ -126,11 +127,12 @@
 			this.slideImage();
 		}
 		slideImage(){
+			const carouselTape = document.querySelector(".jsc-carousel-tape");
+			const slideDistance = carouselTape.querySelectorAll("img")[0].width;
+
 			this.setState({
 				currentIndex : this.currentIndex
 			});
-			const carouselTape = document.querySelector(".jsc-carousel-tape");
-			const slideDistance = carouselTape.querySelectorAll("img")[0].width;
 			
 			carouselTape.style.transition = "all 0.7s ease-in-out";
 			carouselTape.style.left = (-slideDistance*this.currentIndex)+"px";	
@@ -157,11 +159,6 @@
 					currentIndex : 0
 				});
 			}
-
-			carouselTape.addEventListener('transitionend', function(){
-				console.log("Anybody home????");
-			});
-
 		}
 		render(){
 			const imageList = this.imageData.map((image, index)=>
@@ -177,11 +174,13 @@
 					<DirectionButton 
 						increaseIndex={this.increaseIndex.bind(this)}
 						decreaseIndex={this.decreaseIndex.bind(this)}
+						preventClick={this.clickPrevention}
 					/>
 					<Indicator 
 						currentNumber={this.state.currentIndex}
 						imageData={this.imageData} 
 						changeIndexByIndicator={this.changeIndex.bind(this)}
+						preventClick={this.clickPrevention}
 					/>
 				</div>
 			)
@@ -193,9 +192,15 @@
 			super(props);
 		}
 		increaseCurrentIndex(){
+			if(this.props.preventClick){
+				return;
+			}
 			this.props.increaseIndex()
 		}
 		decreaseCurrentIndex(){
+			if(this.props.preventClick){
+				return;
+			}
 			this.props.decreaseIndex();
 		}
 		render(){
@@ -213,6 +218,9 @@
 			super(props);
 		}
 		changeIndicator(index){
+			if(this.props.preventClick){
+				return;
+			}
 			this.props.changeIndexByIndicator(index);
 		}
 		render(){
